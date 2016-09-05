@@ -35,8 +35,12 @@ public class MainActivity extends AppCompatActivity {
         last = (Button) findViewById(R.id.btnLast);
         random = (Button) findViewById(R.id.btnRandom);
 
+        int comNum = generateRandomInt();
+        getComic(comNum);
 
-        getComic(1);
+    }
+
+    void getLast() {
 
     }
 
@@ -65,5 +69,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("TAG", t.toString());
             }
         });
+    }
+
+    int generateRandomInt() {
+        Random r = new Random();
+        return(r.nextInt(53) + 1);
+
     }
 }
