@@ -3,6 +3,7 @@ package com.yellowsoft.subhankar.devcomic;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,10 +17,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     ImageView comicImage;
     TextView title;
     Button next, prev, first, last, random;
+    int comicNum;
 
 
     @Override
@@ -35,13 +37,33 @@ public class MainActivity extends AppCompatActivity {
         last = (Button) findViewById(R.id.btnLast);
         random = (Button) findViewById(R.id.btnRandom);
 
-        int comNum = generateRandomInt();
-        getComic(comNum);
+        next.setOnClickListener(this);
+        prev.setOnClickListener(this);
+        first.setOnClickListener(this);
+        last.setOnClickListener(this);
+        random.setOnClickListener(this);
+
+        comicNum = generateRandomInt();
+        getComic(comicNum);
 
     }
 
-    void getLast() {
-
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnNext:
+                break;
+            case R.id.btnPrev:
+                break;
+            case R.id.btnFirst:
+                break;
+            case R.id.btnLast:
+                break;
+            case R.id.btnRandom:
+                comicNum = generateRandomInt();
+                getComic(comicNum);
+                break;
+        }
     }
 
     void getComic(int num) {
