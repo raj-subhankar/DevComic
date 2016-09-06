@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView comicImage;
     TextView title;
     Button next, prev, random;
-    int comicNum;
+    int comicNum, newComicNum;
 
 
     @Override
@@ -44,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         prev.setOnClickListener(this);
         random.setOnClickListener(this);
 
-        comicNum = generateRandomInt();
-        getComic(comicNum);
+        newComicNum = generateRandomInt();
+        getComic(newComicNum);
 
     }
 
@@ -53,19 +54,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnNext:
-                comicNum++;
+                newComicNum = comicNum + 1;
+                getComic(newComicNum);
                 break;
             case R.id.btnPrev:
-                comicNum--;
+                if(comicNum > 1) {
+                    newComicNum = comicNum - 1;
+                    getComic(newComicNum);
+                } else {
+                    Toast.makeText(MainActivity.this, "No more comics!", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btnRandom:
-                comicNum = generateRandomInt();
+                newComicNum = generateRandomInt();
+                getComic(newComicNum);
                 break;
         }
-        getComic(comicNum);
     }
 
-    void getComic(int num) {
+    void getComic(final int num) {
 
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
@@ -75,11 +82,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         call.enqueue(new Callback<Comic>() {
             @Override
             public void onResponse(Call<Comic> call, Response<Comic> response) {
-                Log.d("response", response.toString());
-                if (response != null) {
+                if (response.code() != 404) {
+                    comicNum = num;
                     Comic comic = response.body();
                     Picasso.with(getApplicationContext()).load(comic.getCartoon_jpg()).into(comicImage);
                     title.setText(comic.getTitle());
+                } else {
+                    Toast.makeText(MainActivity.this, "New comics coming soon!", Toast.LENGTH_SHORT).show();
                 }
 
             }
