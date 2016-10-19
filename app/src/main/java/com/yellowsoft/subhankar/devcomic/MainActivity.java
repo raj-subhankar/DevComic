@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo);
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle(R.string.app_name);
         getSupportActionBar().setLogo(R.drawable.ic_logo);
 
         comicImage = (ImageView) findViewById(R.id.comicImage);
@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
+
 
     int generateRandomInt() {
         Random r = new Random();
