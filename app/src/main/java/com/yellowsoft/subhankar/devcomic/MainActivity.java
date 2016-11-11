@@ -6,6 +6,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FloatingActionButton next, prev, random;
     int comicNum;
     ProgressBar mProgressBar;
+    private static final int distance = 10;
+    private static final int velocity = 10;
+    private final GestureDetector detector = new GestureDetector(new SwipeGestureDetector());
 
 
     @Override
@@ -50,6 +55,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         comicNum = generateRandomInt();
         getComic(comicNum);
+
+        comicImage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                detector.onTouchEvent(event);
+                return true;
+            }
+        });
+
 
     }
 
@@ -115,5 +129,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Random r = new Random();
         return (r.nextInt(53) + 1);
 
+    }
+
+    class SwipeGestureDetector extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                if (e1.getX() - e2.getX() > distance && Math.abs(velocityX) > velocity) {
+                    comicNum++;
+                    getComic(comicNum);
+                    // viewflipper.setInAnimation(AnimationUtils.loadAnimation(mContext, R.anim.right_in));
+                    // viewflipper.setOutAnimation(AnimationUtils.loadAnimation(mContext, R.anim.right_out));
+                    // viewflipper.showPrevious();
+                    return true;
+                } else if (e2.getX() - e1.getX() > distance && Math.abs(velocityX) > velocity) {
+                    comicNum--;
+                    getComic(comicNum);
+                    // viewflipper.setInAnimation(AnimationUtils.loadAnimation(mContext, R.anim.left_in));
+                    // viewflipper.setOutAnimation(AnimationUtils.loadAnimation(mContext,R.anim.left_out));
+                    // viewflipper.showNext();
+                    return true;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
     }
 }
