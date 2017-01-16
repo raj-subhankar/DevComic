@@ -17,16 +17,22 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Random;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    ImageView comicImage;
-    TextView title;
-    FloatingActionButton next, prev, random;
+    @BindView(R.id.comicImage) ImageView comicImage;
+    @BindView(R.id.title) TextView textTitle;
+    @BindView(R.id.btnPrev) FloatingActionButton fabPrev;
+    @BindView(R.id.btnNext) FloatingActionButton fabNext;
+    @BindView(R.id.btnRandom) FloatingActionButton fabRandom;
+    @BindView(R.id.loading_progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+
     int comicNum;
-    ProgressBar mProgressBar;
     private static final int distance = 10;
     private static final int velocity = 10;
     private final GestureDetector detector = new GestureDetector(new SwipeGestureDetector());
@@ -36,22 +42,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        comicImage = (ImageView) findViewById(R.id.comicImage);
-        title = (TextView) findViewById(R.id.title);
-        next = (FloatingActionButton) findViewById(R.id.btnNext);
-        prev = (FloatingActionButton) findViewById(R.id.btnPrev);
-        random = (FloatingActionButton) findViewById(R.id.btnRandom);
-        mProgressBar = (ProgressBar) findViewById(R.id.loading_progress_bar);
-
-        next.setOnClickListener(this);
-        prev.setOnClickListener(this);
-        random.setOnClickListener(this);
+        fabNext.setOnClickListener(this);
+        fabPrev.setOnClickListener(this);
+        fabRandom.setOnClickListener(this);
 
         comicNum = generateRandomInt();
         getComic(comicNum);
@@ -85,10 +83,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     void getComic(int num) {
 
-
         mProgressBar.setVisibility(View.VISIBLE);
         comicImage.setVisibility(View.INVISIBLE);
-        title.setText("Loading...");
+        textTitle.setText("Loading...");
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
@@ -113,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             mProgressBar.setVisibility(View.GONE);
                         }
                     });
-                    title.setText(comic.getTitle());
+                    textTitle.setText(comic.getTitle());
                 }
 
             }
